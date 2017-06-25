@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER" "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- Appenders -->
+	<appender name="FA" class="org.apache.log4j.RollingFileAppender">
+		<param name="file" value="/opt/logs/pgi.log" />
+		<param name="MaxFileSize" value="10MB" />
+		<param name="MaxBackupIndex" value="15" />
+
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-4r [%t] %-5p %c %x - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- Console Appender -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d %-4r [%t] %-5p %c %x - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="EMAIL" class="org.apache.log4j.net.SMTPAppender">
+		<param name="BufferSize" value="50" />
+		<param name="SMTPHost" value="mx9.policybazaar.com" />
+		<param name="SMTPPort" value="25" />
+		<param name="SMTPUsername" value="pgreport" />
+		<param name="SMTPPassword" value="password@@" />
+		<param name="From" value="PG Application &lt;pgreport@policybazaar.com&gt;" />
+		<param name="To" value="ranjeet@policybazaar.com" />
+		<param name="Subject" value="[AppHealth] Errors LOG" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{ISO8601}] %n%n %X{clientIP} %n%n %p %n%n %c %n%n %m%n%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="error" />
+			<param name="LevelMax" value="fatal" />
+		</filter>
+	</appender>
+
+	<appender name="Async" class="org.apache.log4j.AsyncAppender">
+		<appender-ref ref="EMAIL" />
+	</appender>
+	
+	<logger name="com.mysoftkey">
+		<level value="debug" />
+	</logger>
+
+
+	<!-- Root Logger -->
+	<root>
+		<priority value="warn" />
+		<appender-ref ref="console" />
+		<appender-ref ref="FA" />
+		<appender-ref ref="Async" />
+	</root>
+
+</log4j:configuration>
